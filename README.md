@@ -6,6 +6,7 @@
 
 - 🤖 使用 DeepSeek API 作为 LLM 后端
 - 🔧 内置文件系统操作工具（创建、读取、更新、删除文件）
+- 📁 支持用户区和工作区分离管理
 - 💻 支持执行系统命令
 - 📝 可通过 Markdown 文件扩展自定义技能
 - 🧠 对话记忆功能（保留最近 10 轮对话）
@@ -17,6 +18,7 @@
 ugotit/
 ├── agent.py              # 核心 Agent 实现
 ├── main.py               # 主程序入口
+├── config.py             # 项目配置文件
 ├── tool_loader.py        # Markdown 技能加载器
 ├── tools/                # 内置工具模块
 │   ├── __init__.py
@@ -24,6 +26,8 @@ ugotit/
 │   └── shell.py          # Shell 命令工具
 ├── skills/               # 自定义技能目录
 │   └── open_browser.md   # 示例技能
+├── user/                 # 用户区目录（存放用户需要的文件）
+├── workspace/            # 工作区目录（存放临时文件）
 ├── test/                 # 测试和验证代码
 │   ├── __init__.py
 │   └── ...
@@ -32,6 +36,16 @@ ugotit/
 ├── Pipfile
 └── Pipfile.lock
 ```
+
+## 目录说明
+
+### 用户区（user/）
+- **用途**：存放用户需要的最终文件、成果文件
+- **何时使用**：当用户明确要求创建文件，或创建的文件是给用户的最终产物时
+
+### 工作区（workspace/）
+- **用途**：存放临时文件、中间产物、工作文件
+- **何时使用**：需要临时存储、调试、处理中间结果时
 
 ## 安装步骤
 
@@ -83,26 +97,41 @@ python main.py
 欢迎使用 Langchain ReAct Agent!
 您可以输入 'exit' 来退出程序。
 可用工具:
-  - create_file: 创建一个新文件并写入内容。
-  - read_file: 读取文件的内容。
-  - update_file: 向现有文件追加内容。
-  - delete_file: 删除一个文件。
+  - create_user_file: 在用户区创建一个新文件并写入内容。
+  - read_user_file: 读取用户区文件的内容。
+  - update_user_file: 向用户区现有文件追加内容。
+  - delete_user_file: 删除用户区的一个文件。
+  - list_user_files: 列出用户区目录下的文件。
+  - create_workspace_file: 在工作区创建一个临时文件并写入内容。
+  - read_workspace_file: 读取工作区文件的内容。
+  - update_workspace_file: 向工作区现有文件追加内容。
+  - delete_workspace_file: 删除工作区的一个文件。
+  - list_workspace_files: 列出工作区目录下的文件。
   - run_shell_command: 执行一个系统命令并返回其输出。
   - open_browser: 打开浏览器访问指定网址。
 
-请输入您的指令: 创建一个名为 hello.txt 的文件，内容是 Hello World!
+请输入您的指令: 在用户区创建一个名为 hello.txt 的文件，内容是 Hello World!
 ```
 
 输入 `exit` 可以退出程序。
 
 ## 内置工具
 
-### 文件系统工具
+### 用户区工具（存放最终成果）
 
-- `create_file(file_path, content)` - 创建文件
-- `read_file(file_path)` - 读取文件
-- `update_file(file_path, content)` - 追加内容到文件
-- `delete_file(file_path)` - 删除文件
+- `create_user_file(file_path, content)` - 在用户区创建文件
+- `read_user_file(file_path)` - 读取用户区文件
+- `update_user_file(file_path, content)` - 追加内容到用户区文件
+- `delete_user_file(file_path)` - 删除用户区文件
+- `list_user_files(dir_path)` - 列出用户区文件
+
+### 工作区工具（存放临时文件）
+
+- `create_workspace_file(file_path, content)` - 在工作区创建文件
+- `read_workspace_file(file_path)` - 读取工作区文件
+- `update_workspace_file(file_path, content)` - 追加内容到工作区文件
+- `delete_workspace_file(file_path)` - 删除工作区文件
+- `list_workspace_files(dir_path)` - 列出工作区文件
 
 ### Shell 工具
 
@@ -156,6 +185,7 @@ python test/final_test.py
 1. 确保已正确配置 `.env` 文件
 2. 本项目专为 Windows 系统设计，Shell 命令会使用 Windows 语法
 3. 执行系统命令时请谨慎操作
+4. 用户区和工作区会在首次运行时自动创建
 
 ## 许可证
 
